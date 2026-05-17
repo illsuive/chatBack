@@ -21,7 +21,7 @@ export const register = async (req, res) => {
         const newUser = new User({ fullname, email, password: hashedPassword })
         await newUser.save()
 
-        // await WelcomeEmail(email)
+        await WelcomeEmail(email)
 
         res.status(201).json({ message: 'User created successfully', success: true })
     } catch (error) {
@@ -51,11 +51,13 @@ export const login = async (req, res) => {
         const userWithoutPassword = user.toObject();
         delete userWithoutPassword.password;
 
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
         res.cookie('token', token, {
             maxAge: 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            secure: process.env.NODE_ENV === 'production'
+            sameSite: isProduction ? 'none' : 'lax',
+            secure: isProduction
         });
         
         res.status(200).json({ message: 'Logged in successfully', success: true, user: userWithoutPassword })
@@ -66,11 +68,13 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true';
+
         res.cookie('token', '', {
             maxAge: 0,
             httpOnly: true,
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            secure: process.env.NODE_ENV === 'production'
+            sameSite: isProduction ? 'none' : 'lax',
+            secure: isProduction
         });
         res.status(200).json({ message: 'Logged out successfully', success: true })
     } catch (error) {
