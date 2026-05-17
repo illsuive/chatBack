@@ -54,8 +54,8 @@ export const login = async (req, res) => {
         res.cookie('token', token, {
             maxAge: 60 * 60 * 1000,
             httpOnly: true,
-            // sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            // secure: process.env.NODE_ENV === 'production'
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: process.env.NODE_ENV === 'production'
         });
         res.status(200).json({ message: 'Logged in successfully', success: true, user: userWithoutPassword })
     } catch (error) {
@@ -68,8 +68,8 @@ export const logout = async (req, res) => {
         res.cookie('token', '', {
             maxAge: 0,
             httpOnly: true,
-            // sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            // secure: process.env.NODE_ENV === 'production'
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: process.env.NODE_ENV === 'production'
         });
         res.status(200).json({ message: 'Logged out successfully', success: true })
     } catch (error) {
